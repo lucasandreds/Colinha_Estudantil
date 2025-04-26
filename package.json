@@ -1,0 +1,26 @@
+{
+  "name": "colinha",
+  "version": "1.0.0",
+  "description": "Plataforma de Estudo e Organização de Arquivos",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "npx tsx src/index.ts",
+    "dev": "npx tsx watch src/index.ts --exclude db",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^5.0.1",
+    "@types/hbs": "^4.0.4",
+    "@types/node": "^22.13.14",
+    "tsx": "^4.19.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.9.1",
+    "express": "^4.21.2",
+    "hbs": "^4.2.0"
+  }
+}

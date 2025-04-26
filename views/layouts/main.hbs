@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="/pico.jade.css">
+    <script src="/htmx.min.js"></script>
+    <title>{{title}}</title>
+  </head>
+  <body>
+    <header class="container">
+      <nav>
+        <ul><strong>Colinha do Estudante 📚</strong></ul>
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="container">
+      {{> @partial-block}}
+    </main>
+  </body>
+</html>

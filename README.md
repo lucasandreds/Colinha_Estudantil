@@ -36,11 +36,10 @@ A aplicação que será desenvolvida tem como objetivo fornecer uma plataforma d
 
 ### Iniciais
 A configuração inicial do projeto
-- [ ] Criar o projeto node, instalar as libs sqlite3, express, handlebars, configurar typescript (Mateus)
-- [ ] Criar um layout inicial em HTML com as libs (Mateus)
-- [ ] Criar uma página inicial usando o layout (Mateus)
-- [ ] Criar um backend inicial com código para migrações do banco de dados (Mateus)
-
+- [x] Criar o projeto node, instalar as libs sqlite3, express, handlebars, configurar typescript (Mateus)
+- [x] Criar um layout inicial em HTML com as libs (Mateus)
+- [x] Criar uma página inicial usando o layout (Mateus)
+- [x] Criar um backend inicial com código para migrações do banco de dados (Mateus)
 
 ### [#1 Como usuário, eu gostaria de gerenciar arquivos](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/1)
 O usuário deve poder gerenciar arquivos, fazer upload, vê-los, baixar e removê-los.
