@@ -1,3 +1,17 @@
 {{#> main title="Início - Colinha"}}
-<p>Olá, {{username}}!</p>
+  <p>Olá, {{username}}!</p>
+
+  <form hx-post="/upload" enctype="multipart/form-data" hx-target="#files-list" hx-swap="beforeend">
+    <input type="file" name="file" required>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <hr>
+
+  <h3>Arquivos Enviados</h3>
+  <ul id="files-list">
+    {{#each files}}
+      {{> file this }}
+    {{/each}}
+  </ul>
 {{/main}}

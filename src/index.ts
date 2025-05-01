@@ -1,10 +1,10 @@
 import express from 'express'
-import { Request } from 'express'
 import path from 'path'
 import hbs from 'hbs'
 import { cwd } from 'process';
-
-await import('./migrations');
+import files from './file';
+import db from './migrations';
+import { AuthenticatedRequest } from './autenticacao';
 
 const app = express();
 // Uma porta aleatória para evitar conflitos
@@ -16,12 +16,6 @@ app.set('view engine', 'hbs');
 hbs.registerPartials(path.join(cwd(), '/views/layouts'));
 hbs.registerPartials(path.join(cwd(), '/views/partials'));
 
-export interface AuthenticatedRequest extends Request {
-    user?: {
-        username: string
-    }
-}
-
 app.use((req: AuthenticatedRequest, res, next) => {
     req.user = {
         username: ['pessoa', 'sujeito', 'cara'][(Math.random()*3)|0%3],
@@ -30,8 +24,15 @@ app.use((req: AuthenticatedRequest, res, next) => {
 })
 
 app.get('/', (req: AuthenticatedRequest, res) => {
-    res.render('index', { username: req.user?.username })
-})
+    const username = req.user?.username
+    const files = db.prepare('SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC').all(username);
+    res.render('index', {
+        username: req.user?.username,
+        files
+    });
+});
+
+files(db,app);
 
 app.use(express.static(path.join(cwd(), 'dist')));
 

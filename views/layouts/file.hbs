@@ -1,0 +1,9 @@
+<li>
+  {{original_name}} ({{uploaded_at}})
+  <a href="/files/{{stored_name}}" download>📥</a>
+  <button 
+    hx-delete="/delete/{{id}}" 
+    hx-target="closest li" 
+    hx-swap="outerHTML"
+  >🗑️</button>
+</li>

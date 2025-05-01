@@ -12,12 +12,25 @@ const version = db.pragma('user_version', { simple: true });
 function migrate() {
     while(1) switch(version) {
         case 0:
+            db.exec('DROP TABLE IF EXISTS files');
+            db.exec(`
+                CREATE TABLE files (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    original_name TEXT NOT NULL,
+                    stored_name TEXT NOT NULL,
+                    username TEXT NOT NULL,
+                    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+            db.pragma('user_version = 39400698');
+            return;
             // Aqui entra uma migração. Ao fim da migração, atualizar a versão:
             // db.pragma('user_version = 39400698');
             // Usar um número aleatório para evitar conflitos entre branches
             // Assim, as migrações formam uma árvore e todas as branches convergem
             // A versão final retorna a função, as outras dão continue
-            return;
+        case 39400698:
+            return; 
         default:
             console.error('A versão do banco de dados não é conhecida:', version);
             exit(1);
@@ -27,3 +40,6 @@ function migrate() {
 db.exec('BEGIN');
 migrate();
 db.exec('COMMIT');
+
+export default db;
+
