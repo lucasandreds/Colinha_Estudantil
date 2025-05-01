@@ -1,9 +1,47 @@
-<li>
-  {{original_name}} ({{uploaded_at}})
-  <a href="/files/{{stored_name}}" download>📥</a>
-  <button 
-    hx-delete="/delete/{{id}}" 
-    hx-target="closest li" 
-    hx-swap="outerHTML"
-  >🗑️</button>
+<li 
+  class="file-preview" 
+  style="display: inline-block; vertical-align: top;" 
+  draggable="true"
+  ondragstart="handleDragStart(event)" 
+  ondragover="handleDragOver(event)" 
+  ondrop="handleDrop(event)"
+  data-id="{{id}}"
+>
+  <article class="card" style="width: 200px; margin: 0.5rem;">
+    <div class="file-preview-content" style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+      <img 
+        src="/files/{{stored_name}}" 
+        alt="{{original_name}}" 
+        loading="lazy"
+        style="max-height: 100%; max-width: 100%; object-fit: contain;"
+      >
+    </div>
+    <footer style="padding: 0.5rem;">
+      <div class="file-info" style="margin-bottom: 0.5rem;">
+        <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{original_name}}</strong>
+        <small style="font-size: 0.7rem; color: var(--muted-color);">{{uploaded_at}}</small>
+      </div>
+      <div class="file-actions" style="display: flex; justify-content: space-between;">
+        <a 
+          href="/files/{{original_name}}" 
+          download 
+          role="button" 
+          class="secondary outline" 
+          style="padding: 0.3rem;"
+          title="Download"
+        >📥</a>
+        <button 
+          hx-delete="/delete/{{id}}" 
+          hx-target="closest li" 
+          hx-swap="outerHTML"
+          class="secondary outline" 
+          style="padding: 0.3rem;"
+          aria-label="Delete"
+          title="Delete"
+        >🗑️</button>
+      </div>
+    </footer>
+  </article>
 </li>
+
+<script src="/drag.js"></script>
