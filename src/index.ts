@@ -35,6 +35,7 @@ app.get('/', (req: AuthenticatedRequest, res) => {
 files(db,app);
 
 app.use(express.static(path.join(cwd(), 'dist')));
+app.use('/icons', express.static(path.join(process.cwd(), 'icons')));
 
 app.use((req: AuthenticatedRequest, res, next) => {
     res.status(404).render('404', { username: req.user?.username });
