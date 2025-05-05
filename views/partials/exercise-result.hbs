@@ -1,0 +1,17 @@
+<h2>Resultados:</h2>
+<ol>
+    {{#each results}}
+        <li>
+            <p><strong>{{title}}</strong></p>
+            <p>Sua Resposta: {{selectedText}}</p>
+            <p>Resposta Correta: {{correctText}}</p>
+            {{#if isCorrect}}
+                <p style="color: green;">✔ Correta</p>
+            {{else if isPartial}}
+                <p style="color: yellow;">✘ Quase ({{percent}})</p>
+            {{else}}
+                <p style="color: red;">✘ Incorreta</p>
+            {{/if}}
+        </li>
+    {{/each}}
+</ol>

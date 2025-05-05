@@ -1,0 +1,31 @@
+{{#> main title="Novo Exercício - Colinha"}}
+
+<h1>Exercício: {{name}}</h1>
+<p>{{description}}</p>
+
+<form hx-post="/exercise/{{rowid}}/result" hx-target="#results" hx-swap="innerhtml">
+    <input type="hidden" name="exercise_id" value="{{rowid}}" />
+    <input type="hidden" name="owner_id" value="{{owner_id}}" />
+    <input type="hidden" name="username" value="{{username}}" />
+
+    {{#each questions}}
+        <fieldset>
+            <legend>{{inc @index}}. {{title}}</legend>
+            {{#each answers}}
+                <label>
+                    <input type="radio" 
+                            name="question_{{@../index}}" 
+                            value="{{value}}" required>
+                    {{text}}
+                </label><br>
+            {{/each}}
+        </fieldset>
+        <br>
+    {{/each}}
+
+    <button type="submit">Submit</button>
+</form>
+<div id="results">
+</div>
+
+{{/main}}
