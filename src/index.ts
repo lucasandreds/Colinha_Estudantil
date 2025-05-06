@@ -5,8 +5,9 @@ import bodyParser from 'body-parser';
 import { cwd } from 'process';
 import { getAllExercises } from './migrations';
 import { Exercise, parseExerciseFromRequest } from './exercises';
-
-await import('./migrations');
+import { maybeWithUser, withUser } from './autenticacao';
+import files from './file';
+import db from './migrations';
 
 const app = express();
 // Uma porta aleatória para evitar conflitos
@@ -21,35 +22,16 @@ hbs.registerPartials(path.join(cwd(), '/views/layouts'));
 hbs.registerPartials(path.join(cwd(), '/views/partials'));
 hbs.registerHelper('inc', (i) => +i + 1);
 
-export type MaybeWithUser<T> = T & Partial<WithUser<T>>;
-type MaybeWithUserHandler<T> = (req: MaybeWithUser<T>, res: express.Response, next: express.NextFunction) => void;
-function maybeWithUser(handler: MaybeWithUserHandler<express.Request>): express.RequestHandler {
-    return function (req, res, next) {
-        const withUser: WithUser<express.Request> = Object.assign({}, req, {
-            user: {
-                username: ['pessoa', 'sujeito', 'cara'][(Math.random()*3)|0%3],
-            }
-        });
-        return handler(withUser, res, next);
-    }
-}
-
-export type WithUser<T> = T & { user: { username: string } };
-type WithUserHandler<T> = (req: WithUser<T>, res: express.Response, next: express.NextFunction) => void;
-function withUser(handler: WithUserHandler<express.Request>): express.RequestHandler {
-    return maybeWithUser((req, res, next) => {
-        if(req.user) return handler(req as WithUser<express.Request>, res, next);
-        return res.redirect('/login');
-    });
-}
-
 app.get('/', withUser((req, res) => {
+    const username = req.user.username;
     const exercises = getAllExercises.all(req.user?.username);
+    const files = db.prepare('SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC').all(username);
     res.render('index', {
         username: req.user?.username,
         exercises,
     });
 }))
+files(db,app);
 
 app.get('/exercise/new', withUser((req, res) => {
     res.render('exercise-new', { username: req.user?.username });
@@ -96,6 +78,7 @@ app.put('/exercise/:id', withUser((req, res) => {
 }))
 
 app.use(express.static(path.join(cwd(), 'dist')));
+app.use('/icons', express.static(path.join(process.cwd(), 'icons')));
 
 app.use(maybeWithUser((req, res, next) => {
     res.status(404).render('404', { username: req.user?.username });

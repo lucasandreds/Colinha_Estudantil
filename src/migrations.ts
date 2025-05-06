@@ -11,16 +11,37 @@ async function migrate() {
     const version = db.pragma('user_version', { simple: true });
     switch(version) {
         case 0:
-            // Aqui entra uma migração. Ao fim da migração, atualizar a versão:
-            // db.pragma('user_version = 39400698');
-            // Usar um número aleatório para evitar conflitos entre branches
-            // Assim, as migrações formam uma árvore e todas as branches convergem
-            // A versão final retorna a função, as outras dão continue
+            db.exec('DROP TABLE IF EXISTS files');
+            db.exec(`
+                CREATE TABLE files (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    original_name TEXT NOT NULL,
+                    stored_name TEXT NOT NULL,
+                    username TEXT NOT NULL,
+                    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+            db.pragma('user_version = 39400698');
+            return migrate();
+        case 39400698:
             db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_exercises_table.sql'), 'utf-8'));
             db.exec('CREATE INDEX IF NOT EXISTS idx_exercises_owner_id ON exercises (owner_id)');
             db.pragma('user_version = 98198766');
             return migrate();
         case 98198766:
+            db.exec('DROP TABLE IF EXISTS files');
+            db.exec(`
+                CREATE TABLE files (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    original_name TEXT NOT NULL,
+                    stored_name TEXT NOT NULL,
+                    username TEXT NOT NULL,
+                    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+            db.pragma('user_version = 61077540');
+            return migrate();
+        case 61077540:
             return;
         default:
             console.error('A versão do banco de dados não é conhecida:', version);
@@ -38,3 +59,5 @@ export const updateExercise = db.prepare('UPDATE exercises SET name = :name, des
 export const getSingleExercise = db.prepare('SELECT rowid, * FROM exercises WHERE rowid = ?');
 export const getAllExercises = db.prepare('SELECT rowid, * FROM exercises WHERE owner_id = ?');
 export const delteExercise = db.prepare('DELETE FROM exercises WHERE rowid = ?');
+
+export default db;
