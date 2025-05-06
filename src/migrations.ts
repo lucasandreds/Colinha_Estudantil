@@ -11,34 +11,16 @@ async function migrate() {
     const version = db.pragma('user_version', { simple: true });
     switch(version) {
         case 0:
-            db.exec('DROP TABLE IF EXISTS files');
-            db.exec(`
-                CREATE TABLE files (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    original_name TEXT NOT NULL,
-                    stored_name TEXT NOT NULL,
-                    username TEXT NOT NULL,
-                    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
-            `);
+            db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_files_table.sql'), 'utf-8'));
             db.pragma('user_version = 39400698');
             return migrate();
         case 39400698:
             db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_exercises_table.sql'), 'utf-8'));
             db.exec('CREATE INDEX IF NOT EXISTS idx_exercises_owner_id ON exercises (owner_id)');
-            db.pragma('user_version = 98198766');
+            db.pragma('user_version = 61077540');
             return migrate();
         case 98198766:
-            db.exec('DROP TABLE IF EXISTS files');
-            db.exec(`
-                CREATE TABLE files (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    original_name TEXT NOT NULL,
-                    stored_name TEXT NOT NULL,
-                    username TEXT NOT NULL,
-                    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
-            `);
+            db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_files_table.sql'), 'utf-8'));
             db.pragma('user_version = 61077540');
             return migrate();
         case 61077540:
