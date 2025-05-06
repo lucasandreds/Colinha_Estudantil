@@ -1,10 +1,49 @@
-{{#each exercises}}
-<article>
-    <header>
-        <a href="/exercise/{{rowid}}">{{name}}</a>
-        <a href="/exercise/{{rowid}}/edit">Editar</a>
-        <a href="#" hx-delete="/exercise/{{rowid}}">Remover</a>
-    </header>
-    {{description}}
-</article>
-{{/each}}
+<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap;">
+  {{#each exercises}}
+  <li 
+    class="file-preview" 
+    style="display: inline-block; vertical-align: top;" 
+    draggable="true"
+    ondragstart="handleDragStart(event)" 
+    ondragover="handleDragOver(event)" 
+    ondrop="handleDrop(event)"
+    data-id="{{rowid}}"
+  >
+    <article class="card" style="width: 200px; margin: 0.5rem;">
+      <div class="file-preview-content" style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center; padding: 0.5rem;">
+          <strong>{{name}}</strong>
+        </div>
+      </div>
+      <footer style="padding: 0.5rem;">
+        <div class="file-info" style="margin-bottom: 0.5rem; font-size: 0.9rem;">
+          {{description}}
+        </div>
+        <div class="file-actions" style="display: flex; justify-content: space-between;">
+          <a 
+            href="/exercise/{{rowid}}"
+            class="secondary outline" 
+            style="padding: 0.3rem;"
+            title="View"
+          >🔍</a>
+          <a 
+            href="/exercise/{{rowid}}/edit" 
+            class="secondary outline" 
+            style="padding: 0.3rem;"
+            title="Edit"
+          >✏️</a>
+          <button 
+            hx-delete="/exercise/{{rowid}}" 
+            hx-target="closest li" 
+            hx-swap="outerHTML"
+            class="secondary outline" 
+            style="padding: 0.3rem;"
+            aria-label="Delete"
+            title="Delete"
+          >🗑️</button>
+        </div>
+      </footer>
+    </article>
+  </li>
+  {{/each}}
+</ul>
