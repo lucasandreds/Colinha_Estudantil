@@ -18,7 +18,7 @@ function files(db,app) {
     
         const fileData = db.prepare(`SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC LIMIT 1`).get(username);
         
-        res.render('layouts/file', fileData);
+        res.render('partials/file', fileData);
     }))
     
     app.get('/files/:id', withUser((req, res) => {
