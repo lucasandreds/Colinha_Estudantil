@@ -61,15 +61,15 @@ O usuário deve poder criar anotações, editá-las e removê-las.
 
 ### [#3 Como usuário, eu gostaria de criar exercícios e revisões](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/3)
 O usuário deve poder criar e fazer exercícios, editá-los e removê-los.
-- [ ] Exibir exercícios do usuário na página principal (Mateus)
-- [ ] Criar uma página para criação de exercício (Mateus)
-- [ ] Criar um endpoint para criação de exercício (Mateus)
-- [ ] Criar uma página para edição de exercício (Mateus)
-- [ ] Criar um endpoint para edição de exercício (Mateus)
-- [ ] Criar uma página para realização de exercício (Mateus)
-- [ ] Criar uma página para resultado de exercício (Mateus)
-- [ ] Criar um endpoint para resultado de exercício (Mateus)
-- [ ] Criar um endpoint para remoção de exercício (Mateus)
+- [x] Exibir exercícios do usuário na página principal (Mateus)
+- [x] Criar uma página para criação de exercício (Mateus)
+- [x] Criar um endpoint para criação de exercício (Mateus)
+- [x] Criar uma página para edição de exercício (Mateus)
+- [x] Criar um endpoint para edição de exercício (Mateus)
+- [x] Criar uma página para realização de exercício (Mateus)
+- [x] Criar uma página para resultado de exercício (Mateus)
+- [x] Criar um endpoint para resultado de exercício (Mateus)
+- [x] Criar um endpoint para remoção de exercício (Mateus)
 
 ### [#4 Como usuário, eu gostaria de ter uma conta pessoal](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/2)
 O usuário deve poder se identificar para ver seus documentos.

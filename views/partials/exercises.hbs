@@ -1,7 +1,9 @@
 {{#each exercises}}
 <article>
     <header>
-        <a href="/exercises/{{id}}">{{name}}</a>
+        <a href="/exercise/{{rowid}}">{{name}}</a>
+        <a href="/exercise/{{rowid}}/edit">Editar</a>
+        <a href="#" hx-delete="/exercise/{{rowid}}">Remover</a>
     </header>
     {{description}}
 </article>

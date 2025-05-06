@@ -1,6 +1,10 @@
 {{#> main title="Novo Exercício - Colinha"}}
 
+<span>
+<a href="/exercise/{{rowid}}/edit">Editar</a>
+<a href="#" hx-delete="/exercise/{{rowid}}">Remover</a>
 <h1>Exercício: {{name}}</h1>
+</span>
 <p>{{description}}</p>
 
 <form hx-post="/exercise/{{rowid}}/result" hx-target="#results" hx-swap="innerhtml">

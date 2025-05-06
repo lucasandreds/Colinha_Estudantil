@@ -81,7 +81,7 @@ app.delete('/exercise/:id', withUser((req, res) => {
     const exercise = Exercise.get(req.params.id);
     if(!exercise) return res.status(404).send('Exercise not found');
     exercise.delete();
-    res.status(200).send();
+    res.header('HX-Redirect', '/').send();
 }))
 
 app.get('/exercise/:id/edit', withUser((req, res) => {
@@ -93,7 +93,7 @@ app.put('/exercise/:id', withUser((req, res) => {
     const exercise = Exercise.get(req.params.id);
     if(!exercise) return res.status(404).send('Exercise not found');
     exercise.update(parseExerciseFromRequest(req));
-    res.status(200).send();
+    res.header('HX-Redirect', '/exercise/' + exercise.rowid).send();
 }))
 
 app.use(express.static(path.join(cwd(), 'dist')));
