@@ -67,7 +67,6 @@ app.get('/exercise/:id', withUser((req, res) => {
 app.post('/exercise/:id/result', withUser((req, res) => {
     const exercise = Exercise.get(req.params.id);
     if(!exercise) return res.status(404).send('Exercise not found');
-    console.info(req.body);
     const results = exercise.parseResult(req.body);
     res.render('partials/exercise-result', {
         username: req.user.username,

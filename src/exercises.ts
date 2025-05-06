@@ -130,7 +130,6 @@ export function parseExerciseFromRequest(req: WithUser<any>): Omit<ExerciseData,
     for(const q of exQuestion) {
         if(!q.title || !Array.isArray(q.answers) || q.answers.length === 0)
             throw new Error('Invalid question data');
-        console.info(q);
         for(const a of q.answers) {
             if(!a.text || isNaN(+a.value))
                 throw new Error('Invalid answer data');
