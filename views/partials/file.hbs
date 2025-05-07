@@ -1,0 +1,52 @@
+<li 
+  class="file-preview" 
+  style="display: inline-block; vertical-align: top;" 
+  draggable="true"
+  ondragstart="handleDragStart(event)" 
+  ondragover="handleDragOver(event)" 
+  ondrop="handleDrop(event)"
+  data-id="{{id}}"
+>
+  <article class="card" style="width: 200px; margin: 0.5rem;">
+    <div class="file-preview-content" style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+    <div 
+      class="file-preview-content" 
+      style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;"
+      hx-get="/preview/{{id}}"
+      hx-trigger="load"
+      hx-target="this"
+      hx-swap="innerHTML"
+    >
+      <progress style="width: 100%;"></progress> <!-- fallback loading -->
+    </div>
+
+
+    </div>
+    <footer style="padding: 0.5rem;">
+      <div class="file-info" style="margin-bottom: 0.5rem;">
+        <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{original_name}}</strong>
+      </div>
+      <div class="file-actions" style="display: flex; justify-content: space-between;">
+        <a 
+          href="/files/{{id}}"
+          download 
+          role="button" 
+          class="secondary outline" 
+          style="padding: 0.3rem;"
+          title="Download"
+        >📥</a>
+        <button 
+          hx-delete="/delete/{{id}}" 
+          hx-target="closest li" 
+          hx-swap="outerHTML"
+          class="secondary outline" 
+          style="padding: 0.3rem;"
+          aria-label="Delete"
+          title="Delete"
+        >🗑️</button>
+      </div>
+    </footer>
+  </article>
+</li>
+
+<script src="/drag.js"></script>

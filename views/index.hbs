@@ -1,3 +1,37 @@
 {{#> main title="Início - Colinha"}}
-<p>Olá, {{username}}!</p>
+  <p>Olá, {{username}}!</p>
+
+<form 
+  id="upload-form"
+  hx-post="/upload" 
+  enctype="multipart/form-data" 
+  hx-target="#files-list" 
+  hx-swap="beforeend"
+  class="upload-form"
+  style="border: 2px dashed var(--pico-muted-border-color); padding: 1rem; text-align: center; border-radius: 0.5rem;">
+  
+  <label for="file-input" style="cursor: pointer;">
+    <strong>Arraste e solte um arquivo aqui</strong> ou clique para selecionar
+  </label>
+  
+  <input 
+    type="file" 
+    name="file" 
+    id="file-input" 
+    required 
+    style="display: none;">
+
+</form>
+
+<script src="/dropfile.js" defer></script>
+
+  <ul id="files-list">
+    {{#each files}}
+      {{> file this }}
+    {{/each}}
+  </ul>
+
+<a href="/exercise/new">Novo exercício</a>
+{{> exercises }}
+
 {{/main}}

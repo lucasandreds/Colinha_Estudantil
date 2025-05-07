@@ -1,0 +1,60 @@
+{{#> main title="Novo Exercício - Colinha"}}
+<h2>Novo Exercício</h2>
+<form id="exerciseForm" hx-post="/exercise">
+<label>
+    Título: <input type="text" id="exName" name="exName" required>
+</label><br>
+<label>
+    Descrição: <input type="text" id="exDesc" name="exDesc" required>
+</label><br>
+
+<div id="questionsContainer"></div>
+
+<button type="button" onclick="addQuestion()">Adicionar Questão</button><br><br>
+<button type="submit">Submit</button>
+</form>
+
+<script>
+function addQuestion() {
+    const questionsContainer = document.getElementById('questionsContainer');
+    const questionCount = questionsContainer.children.length;
+
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question';
+    questionDiv.dataset.index = questionCount;
+
+    questionDiv.innerHTML = `
+    <label>
+        Pergunta:
+        <input type="text" name="exQuestion[${questionCount}][title]" required>
+    </label>
+    <div class="answersContainer" id="answers-${questionCount}"></div>
+    <button type="button" onclick="addAnswer(${questionCount})">Nova Resposta</button>
+    <hr>
+    `;
+
+    questionsContainer.appendChild(questionDiv);
+}
+
+function addAnswer(questionIndex) {
+    const answersContainer = document.getElementById(`answers-${questionIndex}`);
+    const answerCount = answersContainer.children.length;
+
+    const answerDiv = document.createElement('div');
+    answerDiv.className = 'answer';
+
+    answerDiv.innerHTML = `
+    <label>
+        Resposta:
+        <input type="text" name="exQuestion[${questionIndex}][answers][${answerCount}][text]" required>
+    </label>
+    <label>
+        Pontuação:
+        <input type="number" name="exQuestion[${questionIndex}][answers][${answerCount}][value]" required>
+    </label>
+    `;
+
+    answersContainer.appendChild(answerDiv);
+};
+</script>
+{{/main}}

@@ -1,0 +1,92 @@
+{{#> main title="Editar Exercício - Colinha"}}
+<h2>Editar Exercício</h2>
+<form id="editExerciseForm" hx-put="/exercise/{{rowid}}" hx-target="#editResult" hx-swap="innerHTML">
+    <label>
+        Título:
+        <input type="text" name="exName" value="{{name}}" required>
+    </label><br>
+
+    <label>
+        Descrição:
+        <input type="text" name="exDesc" value="{{description}}" required>
+    </label><br>
+
+    <div id="questionsContainer">
+        {{#each questions}}
+            <div class="question" data-index="{{@index}}">
+                <label>
+                    Pergunta:
+                    <input type="text" name="exQuestion[{{@index}}][title]" value="{{title}}" required>
+                </label>
+
+                <div class="answersContainer" id="answers-{{@index}}">
+                    {{#each answers}}
+                        <div class="answer">
+                            <label>
+                                Resposta:
+                                <input type="text" name="exQuestion[{{@../index}}][answers][{{@index}}][text]" value="{{text}}" required>
+                            </label>
+                            <label>
+                                Pontuação:
+                                <input type="number" name="exQuestion[{{@../index}}][answers][{{@index}}][value]" value="{{value}}" required>
+                            </label>
+                        </div>
+                    {{/each}}
+                </div>
+
+                <button type="button" onclick="addAnswer({{@index}})">Nova Resposta</button>
+                <hr>
+            </div>
+        {{/each}}
+    </div>
+
+    <button type="button" onclick="addQuestion()">Adicionar Questão</button><br><br>
+    <button type="submit">Salvar Alterações</button>
+</form>
+
+<div id="editResult"></div>
+
+<script>
+function addQuestion() {
+    const questionsContainer = document.getElementById('questionsContainer');
+    const questionCount = questionsContainer.children.length;
+
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question';
+    questionDiv.dataset.index = questionCount;
+
+    questionDiv.innerHTML = `
+        <label>
+            Pergunta:
+            <input type="text" name="exQuestion[${questionCount}][title]" required>
+        </label>
+        <div class="answersContainer" id="answers-${questionCount}"></div>
+        <button type="button" onclick="addAnswer(${questionCount})">Nova Resposta</button>
+        <hr>
+    `;
+
+    questionsContainer.appendChild(questionDiv);
+}
+
+function addAnswer(questionIndex) {
+    const answersContainer = document.getElementById(`answers-${questionIndex}`);
+    const answerCount = answersContainer.children.length;
+
+    const answerDiv = document.createElement('div');
+    answerDiv.className = 'answer';
+
+    answerDiv.innerHTML = `
+        <label>
+            Resposta:
+            <input type="text" name="exQuestion[${questionIndex}][answers][${answerCount}][text]" required>
+        </label>
+        <label>
+            Pontuação:
+            <input type="number" name="exQuestion[${questionIndex}][answers][${answerCount}][value]" required>
+        </label>
+    `;
+
+    answersContainer.appendChild(answerDiv);
+}
+</script>
+{{/main}}

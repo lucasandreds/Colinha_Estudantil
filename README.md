@@ -43,12 +43,12 @@ A configuração inicial do projeto
 
 ### [#1 Como usuário, eu gostaria de gerenciar arquivos](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/1)
 O usuário deve poder gerenciar arquivos, fazer upload, vê-los, baixar e removê-los.
-- [ ] Exibir arquivos do usuário na página principal (Lucas)
-- [ ] Criar uma página para upload de arquivo (Lucas)
-- [ ] Criar um endpoint para upload de arquivo (Lucas)
+- [x] Exibir arquivos do usuário na página principal (Lucas)
+- [x] Criar uma página para upload de arquivo (Lucas)
+- [x] Criar um endpoint para upload de arquivo (Lucas)
 - [ ] Criar uma página para edição de arquivo (Lucas)
 - [ ] Criar um endpoint para edição de arquivo (Lucas)
-- [ ] Criar um endpoint para remoção de arquivo (Lucas)
+- [x] Criar um endpoint para remoção de arquivo (Lucas)
 
 ### [#2 Como usuário, eu gostaria de criar anotações e artigos](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/4)
 O usuário deve poder criar anotações, editá-las e removê-las.
@@ -61,15 +61,15 @@ O usuário deve poder criar anotações, editá-las e removê-las.
 
 ### [#3 Como usuário, eu gostaria de criar exercícios e revisões](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/3)
 O usuário deve poder criar e fazer exercícios, editá-los e removê-los.
-- [ ] Exibir exercícios do usuário na página principal (Mateus)
-- [ ] Criar uma página para criação de exercício (Mateus)
-- [ ] Criar um endpoint para criação de exercício (Mateus)
-- [ ] Criar uma página para edição de exercício (Mateus)
-- [ ] Criar um endpoint para edição de exercício (Mateus)
-- [ ] Criar uma página para realização de exercício (Mateus)
-- [ ] Criar uma página para resultado de exercício (Mateus)
-- [ ] Criar um endpoint para resultado de exercício (Mateus)
-- [ ] Criar um endpoint para remoção de exercício (Mateus)
+- [x] Exibir exercícios do usuário na página principal (Mateus)
+- [x] Criar uma página para criação de exercício (Mateus)
+- [x] Criar um endpoint para criação de exercício (Mateus)
+- [x] Criar uma página para edição de exercício (Mateus)
+- [x] Criar um endpoint para edição de exercício (Mateus)
+- [x] Criar uma página para realização de exercício (Mateus)
+- [x] Criar uma página para resultado de exercício (Mateus)
+- [x] Criar um endpoint para resultado de exercício (Mateus)
+- [x] Criar um endpoint para remoção de exercício (Mateus)
 
 ### [#4 Como usuário, eu gostaria de ter uma conta pessoal](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/2)
 O usuário deve poder se identificar para ver seus documentos.

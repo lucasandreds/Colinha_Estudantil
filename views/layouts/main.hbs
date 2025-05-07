@@ -6,6 +6,13 @@
     <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="/pico.jade.css">
     <script src="/htmx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gnat/surreal@main/surreal.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/lit-html@3.3.0/lit-html.min.js"></script>
+    <script type="module">
+      import {html, render} from 'https://esm.run/lit-html@1';
+      window.html = html;
+      window.render = render;
+    </script>
     <title>{{title}}</title>
   </head>
   <body>
