@@ -1,73 +1,110 @@
-import path from 'path'
+import path from 'path';
 import { cwd } from 'process';
-import multer from 'multer';
 import fs from 'node:fs';
-import { withUser } from './autenticacao';
 
-const upload = multer({ dest: 'uploads/' });
+import {
+    getSingleFile,
+    getAllFiles,
+    insertFile,
+    deleteFile
+} from './migrations.js';
 
-function files(db,app) {
-
-    app.post('/upload', upload.single('file'), withUser((req, res) => {
-        const username = req.user.username;
-        const file = req.file;
-        if (!file) return res.status(400).send('Nenhum arquivo enviado.');
-        const fileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
-    
-        db.prepare(` INSERT INTO files (original_name, stored_name, username) VALUES (?, ?, ?)`).run(fileName, file.filename, username);
-    
-        const fileData = db.prepare(`SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC LIMIT 1`).get(username);
-        
-        res.render('partials/file', fileData);
-    }))
-    
-    app.get('/files/:id', withUser((req, res) => {
-        const file = db.prepare('SELECT * FROM files WHERE id = ?').get(req.params.id);
-        if (!file) return res.status(404).send('Arquivo não encontrado');
-    
-        const filepath = path.join(cwd(), 'uploads', file.stored_name);
-        
-        res.download(filepath, file.original_name);
-    }));
-    
-
-    app.delete('/delete/:id', withUser((req, res) => {
-        const file = db.prepare('SELECT * FROM files WHERE id = ?').get(req.params.id);
-        if (!file) return res.status(404).send('Arquivo não encontrado');
-
-        const filepath = path.join(cwd(), 'uploads', file.stored_name);
-        fs.unlinkSync(filepath);
-
-        db.prepare('DELETE FROM files WHERE id = ?').run(req.params.id);
-
-        res.send('');
-    }));
-
-    app.get('/preview/:id', withUser((req, res) => {
-        const file = db.prepare('SELECT * FROM files WHERE id = ?').get(req.params.id);
-        if (!file) return res.status(404).send('Arquivo não encontrado');
-    
-        const ext = path.extname(file.original_name).toLowerCase();
-    
-        const fileUrl = `/files/${file.stored_name}`;
-        let previewHtml = '';
-    
-        if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp'].includes(ext)) {
-            previewHtml = `<img src="/icons/image.png" alt="Ícone PDF" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow"">`;
-        } else if (ext === '.pdf') {
-            previewHtml = `<img src="/icons/pdf.png" alt="Ícone PDF" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow"">`;
-        } else if (['.txt', '.md', '.csv'].includes(ext)) {
-            previewHtml = `<img src="/icons/text.png" alt="Ícone TEXT" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow"">`;
-        } else if (['.mp4', '.webm'].includes(ext)) {
-            previewHtml = `<img src="/icons/video.png" alt="Ícone vídeo" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow"">`;
-        } else if (['.mp3', '.wav'].includes(ext)) {
-            previewHtml = `<img src="/icons/audio.png" alt="Ícone áudio" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow"">`;
-        } else {
-            previewHtml = `<img src="/icons/blank.png" alt="Ícone genérico" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow"">`;
-        }
-    
-        res.send(previewHtml);
-    }));
+export interface FileData {
+    id: number;
+    original_name: string;
+    stored_name: string;
+    username: string;
+    uploaded_at: string;
 }
 
-export default files;
+export class File {
+    id: number;
+    original_name: string;
+    stored_name: string;
+    username: string;
+    uploaded_at: string;
+
+    constructor(file: FileData) {
+        this.id = file.id;
+        this.original_name = file.original_name;
+        this.stored_name = file.stored_name;
+        this.username = file.username;
+        this.uploaded_at = file.uploaded_at;
+    }
+
+    static parse(file: any): File {
+        if (!file) throw new Error('File not found');
+        if (!(typeof file === 'object' && 'id' in file && 'original_name' in file && 
+              'stored_name' in file && 'username' in file && 'uploaded_at' in file))
+            throw new Error('Invalid file data');
+        return new File(file);
+    }
+
+    static get(id: string): File {
+        const file = getSingleFile.get(id);
+        return File.parse(file);
+    }
+
+    static getAll(username: string): File[] {
+        const files = getAllFiles.all(username);
+        return files.map((file) => File.parse(file));
+    }
+
+    static create(original_name: string, stored_name: string, username: string): File {
+        const r = insertFile.run({ original_name, stored_name, username });
+        const id = r.lastInsertRowid;
+        if (typeof id === 'bigint') throw new Error('Too many files');
+        return new File({
+            id: Number(id),
+            original_name,
+            stored_name,
+            username,
+            uploaded_at: new Date().toISOString()
+        });
+    }
+
+    delete(): void {
+        const filepath = path.join(cwd(), 'uploads', this.stored_name);
+        fs.unlinkSync(filepath);
+        deleteFile.run(this.id);
+    }
+
+    getFileType(): string {
+        const ext = path.extname(this.original_name).toLowerCase();
+        if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp'].includes(ext)) return 'image';
+        if (ext === '.pdf') return 'pdf';
+        if (['.txt', '.md', '.csv'].includes(ext)) return 'text';
+        if (['.mp4', '.webm'].includes(ext)) return 'video';
+        if (['.mp3', '.wav'].includes(ext)) return 'audio';
+        return 'other';
+    }
+
+    getViewData() {
+        const ext = path.extname(this.original_name).toLowerCase();
+        if (['.txt', '.md', '.csv'].includes(ext)){
+            
+            const filepath = path.join(cwd(), 'uploads', this.stored_name);
+
+            return {
+                id: this.id,
+                original_name: this.original_name,
+                type: this.getFileType(),
+                content: fs.readFileSync(filepath, 'utf8')
+            };
+        }else{
+            return {
+                id: this.id,
+                original_name: this.original_name,
+                type: this.getFileType(),
+                content: ''
+            };
+        }
+    }
+
+    getPreviewData() {
+        return {
+            type: this.getFileType()
+        };
+    }
+
+}

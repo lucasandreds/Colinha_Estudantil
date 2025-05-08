@@ -8,27 +8,25 @@
   data-id="{{id}}"
 >
   <article class="card" style="width: 200px; margin: 0.5rem;">
-    <div class="file-preview-content" style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-    <div 
+   <div 
       class="file-preview-content" 
-      style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center;"
-      hx-get="/preview/{{id}}"
+      style="height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;"
+      hx-get="/archive/preview/{{id}}"
       hx-trigger="load"
       hx-target="this"
       hx-swap="innerHTML"
+      onclick="viewFile('{{id}}')"
     >
-      <progress style="width: 100%;"></progress> <!-- fallback loading -->
+      <progress style="width: 100%;"></progress>
     </div>
-
-
-    </div>
+    
     <footer style="padding: 0.5rem;">
       <div class="file-info" style="margin-bottom: 0.5rem;">
         <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{original_name}}</strong>
       </div>
       <div class="file-actions" style="display: flex; justify-content: space-between;">
         <a 
-          href="/files/{{id}}"
+          href="/archive/files/{{id}}"
           download 
           role="button" 
           class="secondary outline" 
@@ -36,7 +34,7 @@
           title="Download"
         >📥</a>
         <button 
-          hx-delete="/delete/{{id}}" 
+          hx-delete="/archive/delete/{{id}}" 
           hx-target="closest li" 
           hx-swap="outerHTML"
           class="secondary outline" 
@@ -49,4 +47,8 @@
   </article>
 </li>
 
-<script src="/drag.js"></script>
+<script>
+  function viewFile(id) {
+    htmx.ajax('GET', '/archive/view/' + id, {target: 'body', swap: 'beforeend'});
+  }
+</script>

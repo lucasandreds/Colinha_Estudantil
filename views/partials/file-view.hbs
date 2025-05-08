@@ -1,0 +1,35 @@
+{{#if (eq type 'pdf')}}
+<dialog open id="preview-modal" class="modal" style="width: 95vw; height: 95vh; max-width: 100%; max-height: 100%; margin: 0; border-radius: 10px; padding: 0;">
+    <article style="height: 100%; display: flex; flex-direction: column;">
+        <header style="display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; overflow: hidden;">
+            <h3 id="modal-title" style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;">{{original_name}}</h3>
+            <button onclick="this.closest('dialog').remove()" aria-label="Fechar" class="contrast" style="padding: 0.25rem 0.5rem; font-size: 1rem; margin-left: 0.5rem;">✖️</button>
+        </header>
+        <embed src="/archive/files/{{id}}" type="application/pdf" width="100%" height="100%" style="min-height: 80vh; border: none;">
+    </article>
+</dialog>
+{{else if (eq type 'text')}}
+<dialog open id="preview-modal" class="modal" style="width: 95vw; height: 95vh; max-width: 100%; max-height: 100%; margin: 0; border-radius: 10px; padding: 0;">
+    <article style="height: 100%; display: flex; flex-direction: column;">
+        <header style="display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; overflow: hidden;">
+            <h3 id="modal-title" style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;">{{original_name}}</h3>
+            <button onclick="this.closest('dialog').remove()" aria-label="Fechar" class="contrast" style="padding: 0.25rem 0.5rem; font-size: 1rem; margin-left: 0.5rem;">✖️</button>
+        </header>
+        <form hx-post="/archive/save/{{id}}" hx-target="body" hx-swap="beforeend" style="display: flex; flex-direction: column; flex-grow: 1; margin: 0;">
+            <textarea name="content" rows="20" style="width: 100%; flex-grow: 1;">{{content}}</textarea>
+            <footer style="display: flex; justify-content: flex-end; padding: 0; margin: 0;">
+                <button type="submit" class="secondary">Salvar</button>
+            </footer>
+        </form>
+    </article>
+</dialog>
+{{else}}
+<dialog open>
+    <article>
+        <p>Visualização não suportada.</p>
+        <footer>
+            <button onclick="this.closest('dialog').remove()">Fechar</button>
+        </footer>
+    </article>
+</dialog>
+{{/if}}

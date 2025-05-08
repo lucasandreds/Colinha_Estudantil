@@ -16,6 +16,7 @@ async function migrate() {
             return migrate();
         case 39400698:
             db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_exercises_table.sql'), 'utf-8'));
+            db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_files_table.sql'), 'utf-8'));
             db.exec('CREATE INDEX IF NOT EXISTS idx_exercises_owner_id ON exercises (owner_id)');
             db.pragma('user_version = 61077540');
             return migrate();
@@ -42,4 +43,7 @@ export const getSingleExercise = db.prepare('SELECT rowid, * FROM exercises WHER
 export const getAllExercises = db.prepare('SELECT rowid, * FROM exercises WHERE owner_id = ?');
 export const delteExercise = db.prepare('DELETE FROM exercises WHERE rowid = ?');
 
-export default db;
+export const insertFile = db.prepare('INSERT INTO files (original_name, stored_name, username) VALUES (:original_name, :stored_name, :username)')
+export const deleteFile = db.prepare('DELETE FROM files WHERE id = ?')
+export const getSingleFile = db.prepare('SELECT * FROM files WHERE id = ?')
+export const getAllFiles = db.prepare('SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC');
