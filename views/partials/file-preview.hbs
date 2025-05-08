@@ -1,0 +1,13 @@
+{{#if (eq type 'image')}}
+<img src="/icons/image.png" alt="Ícone PDF" loading="lazy" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow">
+{{else if (eq type 'pdf')}}
+<img src="/icons/pdf.png" alt="Ícone PDF" loading="lazy" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow">
+{{else if (eq type 'text')}}
+<img src="/icons/text.png" alt="Ícone TEXT" loading="lazy" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow">
+{{else if (eq type 'video')}}
+<img src="/icons/video.png" alt="Ícone vídeo" loading="lazy" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow">
+{{else if (eq type 'audio')}}
+<img src="/icons/audio.png" alt="Ícone áudio" loading="lazy" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow">
+{{else}}
+<img src="/icons/blank.png" alt="Ícone genérico" loading="lazy" style="width: 100%; height: 100%; object-fit: contain;" class="rounded shadow">
+{{/if}}
