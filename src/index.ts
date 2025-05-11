@@ -39,6 +39,20 @@ app.get('/', withUser((req, res) => {
 
 const upload = multer({ dest: 'uploads/' });;
 
+app.get('/arquivos', withUser((req, res) => {
+  const files = getAllFiles.all(req.user.username);
+  res.render('tabs/tabFiles', { files });
+}));
+
+app.get('/exercicios', withUser((req, res) => {
+  const exercises = getAllExercises.all(req.user.username);
+  res.render('tabs/tabExercises', { exercises });
+}));
+
+app.get('/anotacoes', withUser((req, res) => {
+  res.render('tabs/tabNotes');
+}));
+
 app.post('/archive/upload', upload.single('file'), withUser((req, res) => {
     const username = req.user.username;
     const file = req.file;

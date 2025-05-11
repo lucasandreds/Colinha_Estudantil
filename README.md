@@ -46,8 +46,8 @@ O usuário deve poder gerenciar arquivos, fazer upload, vê-los, baixar e remov�
 - [x] Exibir arquivos do usuário na página principal (Lucas)
 - [x] Criar uma página para upload de arquivo (Lucas)
 - [x] Criar um endpoint para upload de arquivo (Lucas)
-- [ ] Criar uma página para edição de arquivo (Lucas)
-- [ ] Criar um endpoint para edição de arquivo (Lucas)
+- [x] Criar uma página para edição de arquivo (Lucas)
+- [x] Criar um endpoint para edição de arquivo (Lucas)
 - [x] Criar um endpoint para remoção de arquivo (Lucas)
 
 ### [#2 Como usuário, eu gostaria de criar anotações e artigos](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/4)
