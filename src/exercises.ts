@@ -1,4 +1,4 @@
-import { WithUser } from './index.js';
+import type { WithUser } from './autenticacao.js';
 import {
     getSingleExercise,
     getAllExercises,
