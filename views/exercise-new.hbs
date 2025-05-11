@@ -11,7 +11,7 @@
 <div id="questionsContainer"></div>
 
 <button type="button" onclick="addQuestion()">Adicionar Questão</button><br><br>
-<button type="submit">Submit</button>
+<button type="submit">Criar Exercício</button>
 </form>
 
 <script>
@@ -44,6 +44,7 @@ function addAnswer(questionIndex) {
     answerDiv.className = 'answer';
 
     answerDiv.innerHTML = `
+    <fieldset class="grid">
     <label>
         Resposta:
         <input type="text" name="exQuestion[${questionIndex}][answers][${answerCount}][text]" required>
@@ -52,6 +53,7 @@ function addAnswer(questionIndex) {
         Pontuação:
         <input type="number" name="exQuestion[${questionIndex}][answers][${answerCount}][value]" required>
     </label>
+    </fieldset>
     `;
 
     answersContainer.appendChild(answerDiv);
