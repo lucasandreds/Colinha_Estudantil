@@ -1,25 +1,30 @@
-<form 
-  id="upload-form"
-  enctype="multipart/form-data"
-  class="upload-form"
-  style="border: 2px dashed var(--pico-muted-border-color); padding: 1rem; text-align: center; border-radius: 0.5rem;">
-  
-  <label for="file-input" style="cursor: pointer;">
-    <strong>Arraste e solte um arquivo aqui</strong> ou clique para selecionar
-  </label>
-  
-  <input 
-    type="file" 
-    name="file" 
-    id="file-input" 
-    required 
-    style="display: none;"
-    hx-post="/archive/upload"
-    hx-target="#files-list"
-    hx-swap="beforeend"
-    hx-encoding="multipart/form-data"
-    hx-trigger="change">
-</form>
+<a class="floating-button" href="#" onclick="me('#file-dialog').show()">+</a>
+<dialog id="file-dialog" onclick="me(event).close()">
+  <form 
+    id="upload-form"
+    enctype="multipart/form-data"
+    class="upload-form"
+    style="border: 2px dashed var(--pico-muted-border-color); padding: 1rem; text-align: center; border-radius: 0.5rem;"
+    onclick="event.stopPropagation()">
+    
+    <label for="file-input" style="cursor: pointer;">
+      <strong>Arraste e solte um arquivo aqui</strong> ou clique para selecionar
+    </label>
+    
+    <input 
+      type="file" 
+      name="file" 
+      id="file-input" 
+      required 
+      style="display: none;"
+      hx-post="/archive/upload"
+      hx-target="#files-list"
+      hx-swap="beforeend"
+      hx-encoding="multipart/form-data"
+      hx-trigger="change"
+      hx-on:htmx:after-request="me('#file-dialog').close()">
+  </form>
+</dialog>
 
 <script src="/dropfile.js" defer></script>
 
