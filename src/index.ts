@@ -3,11 +3,14 @@ import path from 'path'
 import hbs from 'hbs'
 import bodyParser from 'body-parser';
 import { cwd } from 'process';
-import { getAllExercises } from './migrations';
+import { getAllExercises, getAllFiles } from './migrations';
 import { Exercise, parseExerciseFromRequest } from './exercises';
 import { maybeWithUser, withUser } from './autenticacao';
-import files from './file';
-import db from './migrations';
+import { File } from './file';
+import multer from 'multer';
+import fs from 'node:fs';
+
+fs.mkdirSync('uploads', { recursive: true })
 
 const app = express();
 // Uma porta aleatória para evitar conflitos
@@ -21,17 +24,83 @@ app.use(bodyParser.urlencoded({ extended: true }));
 hbs.registerPartials(path.join(cwd(), '/views/layouts'));
 hbs.registerPartials(path.join(cwd(), '/views/partials'));
 hbs.registerHelper('inc', (i) => +i + 1);
+hbs.registerHelper('eq', (a, b) => {return a === b;});
 
 app.get('/', withUser((req, res) => {
     const username = req.user.username;
     const exercises = getAllExercises.all(req.user?.username);
-    const files = db.prepare('SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC').all(username);
+    const files = getAllFiles.all(username);
     res.render('index', {
         username: req.user?.username,
         exercises,
+        files
     });
 }))
-files(db,app);
+
+const upload = multer({ dest: 'uploads/' });;
+
+app.get('/arquivos', withUser((req, res) => {
+  const files = getAllFiles.all(req.user.username);
+  res.render('tabs/tabFiles', { files });
+}));
+
+app.get('/exercicios', withUser((req, res) => {
+  const exercises = getAllExercises.all(req.user.username);
+  res.render('tabs/tabExercises', { exercises });
+}));
+
+app.get('/anotacoes', withUser((req, res) => {
+  res.render('tabs/tabNotes');
+}));
+
+app.post('/archive/upload', upload.single('file'), withUser((req, res) => {
+    const username = req.user.username;
+    const file = req.file;
+    if (!file) return res.status(400).send('Nenhum arquivo enviado.');
+    const fileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    
+    const newFile = File.create(fileName, file.filename, username);
+    res.render('partials/file', { ...newFile });
+}));
+
+app.get('/archive/files/:id', withUser((req, res) => {
+    const file = File.get(req.params.id);
+    if (!file) return res.status(404).send('Arquivo não encontrado');
+    const filepath = path.join(cwd(), 'uploads', file.stored_name);
+    res.download(filepath, file.original_name);
+}));
+
+app.delete('/archive/delete/:id', withUser((req, res) => {
+    const file = File.get(req.params.id);
+    if (!file) return res.status(404).send('Arquivo não encontrado');
+    file.delete();
+    res.send('');
+}));
+
+app.get('/archive/preview/:id', withUser((req, res) => {
+    const file = File.get(req.params.id);
+    if (!file) return res.status(404).send('Arquivo não encontrado');
+    res.render('partials/file-preview', file.getPreviewData());
+}));
+
+app.get('/archive/view/:id', withUser((req, res) =>{
+    const file = File.get(req.params.id);
+    if (!file) return res.status(404).send('Arquivo não encontrado');
+    res.render('partials/file-view', file.getViewData());
+}));
+
+app.post('/archive/save/:id', express.urlencoded({ extended: true }), withUser((req, res) => {
+    const file = File.get(req.params.id);
+    if (!file) return res.status(404).send('Arquivo não encontrado');
+
+    const ext = path.extname(file.original_name).toLowerCase();
+    if (!['.txt', '.md', '.csv'].includes(ext)) return res.status(400).send('Formato não editável.');
+
+    const filepath = path.join(cwd(), 'uploads', file.stored_name);
+    fs.writeFileSync(filepath, req.body.content, 'utf8');
+
+    res.render('partials/save-success');
+}));
 
 app.get('/exercise/new', withUser((req, res) => {
     res.render('exercise-new', { username: req.user?.username });
