@@ -23,7 +23,7 @@
 
 <script src="/dropfile.js" defer></script>
 
-<ul id="files-list">
+<ul id="files-list" style="display: flex; flex-direction: row; flex-wrap: wrap;">
   {{#each files}}
     {{> file this }}
   {{/each}}
