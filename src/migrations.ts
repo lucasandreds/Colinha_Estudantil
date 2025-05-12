@@ -1,11 +1,24 @@
 import Database from 'better-sqlite3';
-import fs from 'node:fs/promises'
+import fs from 'node:fs/promises';
 import path from 'node:path';
-import { cwd, exit } from 'node:process';
+import { cwd } from 'node:process';
 
+// Ensure the 'db' directory exists
 await fs.mkdir(path.join(cwd(), 'db'), { recursive: true });
+
+// Open the SQLite database
 const db = new Database('db/sqlite');
+
+// Set PRAGMA settings
 db.pragma('journal_mode = WAL');
+
+// Read the SQL file content
+const sqlFilePath = path.join(cwd(), 'queries', 'create_users_table.sql');
+const sql = await fs.readFile(sqlFilePath, 'utf8');
+
+// Execute SQL (could be multiple statements)
+db.exec(sql);
+
 
 async function migrate() {
     const version = db.pragma('user_version', { simple: true });

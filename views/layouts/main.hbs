@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -47,14 +47,23 @@
       
       <div class="navbar-right">
         <ul>
-          <li><span>Olá, {{username}}!</span></li>
-          <li><a href="/logout" hx-get="/logout" hx-target="body" hx-swap="outerHTML">Logout</a></li>
+          {{#if username}}
+            <li><span>Olá, {{username}}!</span></li>
+            <li>
+              <form action="/logout" method="post" style="display:inline;">
+                <button type="submit">Sair</button>
+              </form>
+            </li>
+          {{else}}
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Registrar</a></li>
+          {{/if}}
         </ul>
       </div>
     </nav>
     <main class="container">
       <div id="content-area">
-        {{> @partial-block}}
+        {{{body}}}
       </div>
     </main>
   </body>

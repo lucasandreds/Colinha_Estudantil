@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="/pico.jade.css">
+    <link rel="stylesheet" href="/colinha.css">
+    <script src="/htmx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gnat/surreal@main/surreal.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/lit-html@3.3.0/lit-html.min.js"></script>
+    <script type="module">
+      import {html, render} from 'https://esm.run/lit-html@1';
+      window.html = html;
+      window.render = render;
+    </script>
+    <title>{{title}}</title>
+  </head>
+  <body>
+     <nav class="container-fluid">
+      <div class="navbar-left">
+        <ul>
+          <li><strong>📚 Colinha do Estudante</strong></li>
+        </ul>
+      </div>
+      
+      <div class="navbar-center">
+        <ul>
+          <li><a href="arquivos" 
+                 hx-get="/arquivos" 
+                 hx-target="#content-area" 
+                 hx-swap="innerHTML"
+                 hx-trigger="click"
+                 aria-current="page">Arquivos</a></li>
+          <li><a href="exercicios" 
+                 hx-get="/exercicios" 
+                 hx-target="#content-area" 
+                 hx-swap="innerHTML"
+                 hx-trigger="click">Exercícios</a></li>
+          <li><a href="anotacoes" 
+                 hx-get="/anotacoes" 
+                 hx-target="#content-area" 
+                 hx-swap="innerHTML"
+                 hx-trigger="click">Anotações</a></li>
+        </ul>
+      </div>
+      
+      <div class="navbar-right">
+        <ul>
+          <li><span>Olá, {{username}}!</span></li>
+          <li><a href="/logout" hx-get="/logout" hx-target="body" hx-swap="outerHTML">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+    <main class="container">
+      <div id="content-area">
+        {{> @partial-block}}
+      </div>
+    </main>
+  </body>
+</html>

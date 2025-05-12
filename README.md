@@ -73,10 +73,10 @@ O usuário deve poder criar e fazer exercícios, editá-los e removê-los.
 
 ### [#4 Como usuário, eu gostaria de ter uma conta pessoal](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/2)
 O usuário deve poder se identificar para ver seus documentos.
-- [ ] Atribuir um cookie de sessão para cada usuário que acessar o site (Pedro)
-- [ ] Associar sessões a usuários (Pedro)
-- [ ] Criar uma página de login (Pedro)
-- [ ] Criar um endpoint de login (Pedro)
-- [ ] Criar uma página de registro (Pedro)
-- [ ] Criar um endpoint de registro (Pedro)
-- [ ] Criar um endpoint de logout (Pedro)
+- [x] Atribuir um cookie de sessão para cada usuário que acessar o site (Pedro)
+- [x] Associar sessões a usuários (Pedro)
+- [x] Criar uma página de login (Pedro)
+- [x] Criar um endpoint de login (Pedro)
+- [x] Criar uma página de registro (Pedro)
+- [x] Criar um endpoint de registro (Pedro)
+- [x] Criar um endpoint de logout (Pedro)

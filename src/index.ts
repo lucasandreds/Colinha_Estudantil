@@ -1,4 +1,3 @@
-import express from "express";
 import path from "path";
 import hbs from "hbs";
 import bodyParser from "body-parser";
@@ -10,12 +9,32 @@ import { File } from "./file";
 import multer from "multer";
 import fs from "node:fs";
 import { Note } from "./notes";
+import authRouter from "./autenticacao";
+import db from './db';
 
-fs.mkdirSync("uploads", { recursive: true });
+import express from "express";
+import session from "express-session";
+import FileStore from "session-file-store";
+
+const FileStoreSession = FileStore(session);
 
 const app = express();
-// Uma porta aleatória para evitar conflitos
-const port = 24626;
+const port = 24627;
+
+// Session middleware (ensure this is before other middleware)
+app.use(
+  session({
+    store: new FileStoreSession({ path: './sessions' }), // Pasta onde as sessões serão armazenadas
+    secret: process.env.SESSION_SECRET || "alga-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+      maxAge: 2 * 60 * 60 * 1000, // 2 horas
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      httpOnly: true
+    },
+  })
+);
 
 app.set("views", path.join(cwd(), "views"));
 app.set("view engine", "hbs");
@@ -25,25 +44,79 @@ app.use(bodyParser.urlencoded({ extended: true }));
 hbs.registerPartials(path.join(cwd(), "/views/layouts"));
 hbs.registerPartials(path.join(cwd(), "/views/partials"));
 hbs.registerHelper("inc", (i) => +i + 1);
-hbs.registerHelper("eq", (a, b) => {
-  return a === b;
+hbs.registerHelper("eq", (a, b) => a === b);
+
+// Root route with authentication check
+app.get('/', (req, res) => {
+  // Check if user is authenticated
+  if (req.session.userId) {
+    // Fetch user details
+    const user = db.prepare('SELECT username FROM users WHERE id = ?').get(req.session.userId) as { username: string } | undefined;
+    
+    if (user) {
+      // Fetch exercises and files for the user
+      const username = user.username;
+      const exercises = getAllExercises.all(username);
+      const files = getAllFiles.all(username);
+
+      // Render index page with user data
+      return res.render('index', {
+        username,
+        exercises,
+        files,
+      });
+    }
+  }
+  
+  // If not authenticated, redirect to login
+  res.redirect('/login');
 });
 
-app.get(
-  "/",
-  withUser((req, res) => {
-    const username = req.user.username;
-    const exercises = getAllExercises.all(req.user?.username);
-    const files = getAllFiles.all(username);
-    res.render("index", {
-      username: req.user?.username,
-      exercises,
-      files,
-    });
-  })
-);
 
+app.get('/login', (req, res) => {
+  // If already logged in, redirect to index
+  if (req.session.userId) {
+    return res.redirect('/');
+  }
+  
+  // Render login page with main layout
+  res.render('login', {
+    layout: 'layouts/main', 
+    title: 'Login'
+  });
+});
+
+// Register route with authentication check
+app.get('/register', (req, res) => {
+  // If already logged in, redirect to index
+  if (req.session.userId) {
+    return res.redirect('/');
+  }
+  
+  // Render register page
+  res.render('register', {
+    layout: 'layouts/main',
+    title: 'Register'});
+});
+
+// Authentication routes
+app.use(authRouter);
+
+// Rest of your existing routes remain the same
 const upload = multer({ dest: "uploads/" });
+
+// Rotas de autenticação (login, register, logout)
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+// POST /login, /register, /logout já são tratados no router autenticacao.ts
+app.use(authRouter);
+
 
 app.get(
   "/arquivos",
@@ -258,9 +331,11 @@ app.get(
   })
 );
 
+// Static files
 app.use(express.static(path.join(cwd(), "dist")));
 app.use("/icons", express.static(path.join(process.cwd(), "icons")));
 
+// 404 Handler
 app.use(
   maybeWithUser((req, res, next) => {
     res.status(404).render("404", { username: req.user?.username });
@@ -270,3 +345,5 @@ app.use(
 app.listen(port, () => {
   console.log("Listening on", "http://localhost:" + port);
 });
+
+export default app;

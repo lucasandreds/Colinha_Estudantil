@@ -6,24 +6,36 @@
   "type": "module",
   "scripts": {
     "start": "npx tsx src/index.ts",
-    "dev": "npx tsx watch src/index.ts --exclude db",
+    "dev": "nodemon --watch src --ext ts --ignore db --ignore uploads --ignore sessions --ignore node_modules --exec \"npx tsx src/index.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/better-sqlite3": "^7.6.12",
     "@types/express": "^5.0.1",
+    "@types/express-session": "^1.18.1",
     "@types/hbs": "^4.0.4",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.14",
+    "nodemon": "^3.0.2",
     "tsx": "^4.19.3"
   },
   "dependencies": {
-    "better-sqlite3": "^11.9.1",
+    "@types/bcryptjs": "^2.4.6",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "better-sqlite3": "^11.10.0",
     "body-parser": "^2.2.0",
+    "connect-sqlite3": "^0.9.15",
     "express": "^4.21.2",
+    "express-session": "^1.17.2",
+    "express-session-sqlite": "^2.1.1",
     "hbs": "^4.2.0",
-    "multer": "^1.4.5-lts.2"
+    "multer": "^1.4.5-lts.2",
+    "session-file-store": "^1.5.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   }
 }
