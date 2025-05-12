@@ -83,9 +83,8 @@ app.get('/register', (req, res) => {
   
   // Render register page
   res.render('register', {
-    layout: 'layouts/main',
     hideNav: true,
-    title: 'Register'});
+  });
 });
 
 // Rest of your existing routes remain the same
