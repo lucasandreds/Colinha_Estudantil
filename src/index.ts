@@ -70,9 +70,7 @@ app.get('/login', (req, res) => {
   
   // Render login page with main layout
   res.render('login', {
-    layout: 'layouts/main', 
     hideNav: true,
-    title: 'Login'
   });
 });
 

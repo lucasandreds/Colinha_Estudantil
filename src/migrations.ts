@@ -42,7 +42,7 @@ async function migrate() {
             return;
         default:
             console.error('A versão do banco de dados não é conhecida:', version);
-            exit(1);
+            process.exit(1);
     }
 }
 

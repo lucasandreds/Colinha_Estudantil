@@ -119,8 +119,6 @@ router.post('/login', async (req, res) => {
   // Validate input
   if (!username || !password) {
     return res.status(400).render('login', {
-      layout: 'layouts/main',  // Add layout
-      title: 'Login',          // Add title for layout
       error: 'Usuário e senha são obrigatórios'
     });
   }
@@ -138,14 +136,11 @@ router.post('/login', async (req, res) => {
       return res.redirect('/');
     }
     res.status(401).render('login', {
-      layout: 'layouts/main', // Add this
       error: 'Usuário ou senha inválidos'
     });
   } catch (e) {
     console.error('Login error:', e);
     res.status(500).render('login', {
-      layout: 'layouts/main',
-      title: 'Login',
       error: 'Erro interno do servidor. Tente novamente mais tarde.'
     });
   }
