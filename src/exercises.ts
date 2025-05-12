@@ -1,5 +1,4 @@
-import { withUser } from './autenticacao.js';
-import type { Request } from 'express';
+import type { RequestWithUser } from './autenticacao.js';
 import {
     getSingleExercise,
     getAllExercises,
@@ -8,33 +7,23 @@ import {
     delteExercise
 } from './migrations.js';
 
-/**
- * Extend Express Request to include the user property added by withUser middleware
- */
-export interface RequestWithUser extends Request {
-    user?: {
-        username: string;
-        // add other user properties if needed
-    };
-}
-
 export interface ExerciseQuestionAnswer {
-    text: string;
-    value: number;
+    text: string,
+    value: number,
 }
 
 export interface ExerciseQuestion {
-    title: string;
-    answers: ExerciseQuestionAnswer[];
-}
+    title: string,
+    answers: ExerciseQuestionAnswer[],
+};
 
 export interface ExerciseData {
-    rowid: number;
-    owner_id: string;
-    name: string;
-    description: string;
-    questions: ExerciseQuestion[];
-}
+    rowid: number,
+    owner_id: string,
+    name: string,
+    description: string,
+    questions: ExerciseQuestion[],
+};
 
 export class Exercise {
     rowid: number;
@@ -42,7 +31,6 @@ export class Exercise {
     name: string;
     description: string;
     questions: ExerciseQuestion[];
-
     constructor(exercise: ExerciseData) {
         this.rowid = exercise.rowid;
         this.owner_id = exercise.owner_id;
@@ -50,140 +38,109 @@ export class Exercise {
         this.description = exercise.description;
         this.questions = exercise.questions;
     }
-
-    static parse(raw: any): Exercise {
-        if (!raw) throw new Error('Exercise not found');
-        const requiredProps = ['rowid', 'owner_id', 'name', 'description', 'data'];
-        for (const prop of requiredProps) {
-            if (!(prop in raw)) {
-                throw new Error(`Invalid exercise data: missing ${prop}`);
-            }
+    static parse(exercise: any) {
+        if(!exercise) throw new Error('Exercise not found');
+        if(!(typeof exercise === 'object' && 'rowid' in exercise && 'owner_id' in exercise && 'name' in exercise && 'description' in exercise && 'data' in exercise))
+            throw new Error('Invalid exercise data');
+        if(typeof exercise.rowid !== 'number' || typeof exercise.owner_id !== 'string' || typeof exercise.name !== 'string' || typeof exercise.description !== 'string' || typeof exercise.data !== 'string')
+            throw new Error('Invalid exercise data');
+        const data = JSON.parse(exercise.data);
+        for(const question of data) {
+            if(typeof question.title !== 'string' || !Array.isArray(question.answers))
+                throw new Error('Invalid exercise question data');
+            for(const answer of question.answers)
+                if(typeof answer.text !== 'string' || typeof answer.value !== 'number')
+                    throw new Error('Invalid exercise answer data');
         }
-        if (typeof raw.rowid !== 'number' || typeof raw.owner_id !== 'string' ||
-            typeof raw.name !== 'string' || typeof raw.description !== 'string' ||
-            typeof raw.data !== 'string') {
-            throw new Error('Invalid exercise data types');
-        }
-
-        const data: ExerciseQuestion[] = JSON.parse(raw.data);
-        data.forEach((question, qi) => {
-            if (typeof question.title !== 'string' || !Array.isArray(question.answers)) {
-                throw new Error(`Invalid question data at index ${qi}`);
-            }
-            question.answers.forEach((answer, ai) => {
-                if (typeof answer.text !== 'string' || typeof answer.value !== 'number') {
-                    throw new Error(`Invalid answer data at question ${qi}, answer ${ai}`);
-                }
-            });
-        });
-
         return new Exercise({
-            rowid: raw.rowid,
-            owner_id: raw.owner_id,
-            name: raw.name,
-            description: raw.description,
-            questions: data
+            rowid: exercise.rowid,
+            owner_id: exercise.owner_id,
+            name: exercise.name,
+            description: exercise.description,
+            questions: data,
         });
     }
-
-    static get(id: string): Exercise {
-        const raw = getSingleExercise.get(id);
-        return Exercise.parse(raw);
+    static get(id: string) {
+        const exercise = getSingleExercise.get(id);
+        return Exercise.parse(exercise);
     }
-
     static getAll(owner_id: string): Exercise[] {
-        const raws = getAllExercises.all(owner_id);
-        return raws.map(raw => Exercise.parse(raw));
+        const exercises = getAllExercises.all(owner_id);
+        return exercises.map((exercise) => Exercise.parse(exercise));
     }
-
     static create(data: Omit<ExerciseData, 'rowid'>): Exercise {
         const { owner_id, name, description, questions } = data;
-        const result = insertExercise.run({ owner_id, name, description, data: JSON.stringify(questions) });
-        const id = result.lastInsertRowid;
-        if (typeof id === 'bigint') throw new Error('Too many exercises');
-
-        return new Exercise({ ...data, rowid: Number(id) });
+        const r = insertExercise.run({ owner_id, name, description, data: JSON.stringify(questions) });
+        const id = r.lastInsertRowid;
+        if(typeof id === 'bigint') throw new Error('Too many exercises');
+        return new Exercise(Object.assign({}, data, { rowid: id }));
     }
-
-    update(fields?: Partial<Omit<ExerciseData, 'rowid'>>): void {
-        if (fields) {
-            if (fields.name) this.name = fields.name;
-            if (fields.description) this.description = fields.description;
-            if (fields.questions) this.questions = fields.questions;
+    update(data?: Partial<Omit<ExerciseData, 'rowid'>>) {
+        if(data) {
+            if(data.name) this.name = data.name;
+            if(data.description) this.description = data.description;
+            if(data.questions) this.questions = data.questions;
         }
         upsertExercise.run({
             rowid: this.rowid,
             owner_id: this.owner_id,
             name: this.name,
             description: this.description,
-            data: JSON.stringify(this.questions)
+            data: JSON.stringify(this.questions),
         });
     }
-
-    delete(): void {
+    delete() {
         delteExercise.run(this.rowid);
     }
-
     parseResult(body: any) {
-        const required = ['exercise_id', 'owner_id', 'username'];
-        for (const r of required) {
-            if (!(r in body)) {
-                throw new Error(`Invalid result body: missing ${r}`);
-            }
+        if(!('exercise_id' in body && 'owner_id' in body && 'username' in body)) {
+            throw new Error('Invalid exercise answer body');
         }
         const { exercise_id, owner_id, username, ...answers } = body;
-
         return this.questions.map((question, index) => {
             const selectedValue = answers[`question_${index}`];
-            const correctAnswer = question.answers.reduce((max, ans) => ans.value > max.value ? ans : max);
-            const isCorrect = selectedValue === correctAnswer.value;
+            const correctAnswer = question.answers.reduce((max, ans) =>
+                ans.value > max.value ? ans : max
+            );
+            const isCorrect = selectedValue == correctAnswer.value;
             const isPartial = selectedValue < correctAnswer.value && selectedValue > 0;
             const percent = selectedValue / correctAnswer.value;
-
+    
             return {
                 title: question.title,
-                selectedText: question.answers.find(ans => ans.value === selectedValue)?.text || 'N/A',
+                selectedText: question.answers.find(ans => ans.value == selectedValue)?.text || 'N/A',
                 correctText: correctAnswer.text,
                 isCorrect,
                 isPartial,
-                percent
+                percent,
             };
         });
     }
-}
+};
 
-/**
- * Safely parse exercise data from request body.
- * Assumes withUser middleware has added `user` to `req`.
- */
-export function parseExerciseFromRequest(
-    req: RequestWithUser
-): Omit<ExerciseData, 'rowid'> {
+export function parseExerciseFromRequest(req: RequestWithUser): Omit<ExerciseData, 'rowid'> {
     const { exName, exDesc, exQuestion } = req.body;
-    if (!exName || !exDesc || !exQuestion) {
-        throw new Error('Missing required fields: exName, exDesc, or exQuestion');
+    if(!exName || !exDesc || !exQuestion) {
+        throw new Error('Missing required fields: exName, exDesc, or exQuestions');
     }
-    if (!Array.isArray(exQuestion) || exQuestion.length === 0) {
+    if(!Array.isArray(exQuestion) || exQuestion.length === 0) {
         throw new Error('exQuestion must be a non-empty array');
     }
-
-    const questions: ExerciseQuestion[] = exQuestion.map((q: any, qi: number) => {
-        if (!q.title || !Array.isArray(q.answers) || q.answers.length === 0) {
-            throw new Error(`Invalid question at index ${qi}`);
+    const questions: ExerciseData['questions'] = [];
+    for(const q of exQuestion) {
+        if(!q.title || !Array.isArray(q.answers) || q.answers.length === 0)
+            throw new Error('Invalid question data');
+        for(const a of q.answers) {
+            if(!a.text || isNaN(+a.value))
+                throw new Error('Invalid answer data');
+            a.value = +a.value;
         }
-        const answers = q.answers.map((a: any, ai: number) => {
-            if (!a.text || isNaN(+a.value)) {
-                throw new Error(`Invalid answer at question ${qi}, answer ${ai}`);
-            }
-            return { text: a.text, value: +a.value };
-        });
-        return { title: q.title, answers };
-    });
-
+        questions.push({ title: q.title, answers: q.answers });
+    }
     return {
-        owner_id: req.user?.username ?? 'unknown',
+        owner_id: req.user?.username,
         name: exName,
         description: exDesc,
-        questions
+        questions: questions,
     };
 }

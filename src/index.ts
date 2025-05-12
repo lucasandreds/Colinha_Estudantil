@@ -47,30 +47,19 @@ hbs.registerHelper("inc", (i) => +i + 1);
 hbs.registerHelper("eq", (a, b) => a === b);
 
 // Root route with authentication check
-app.get('/', (req, res) => {
-  // Check if user is authenticated
-  if (req.session.userId) {
-    // Fetch user details
-    const user = db.prepare('SELECT username FROM users WHERE id = ?').get(req.session.userId) as { username: string } | undefined;
-    
-    if (user) {
-      // Fetch exercises and files for the user
-      const username = user.username;
-      const exercises = getAllExercises.all(username);
-      const files = getAllFiles.all(username);
+app.get('/', withUser((req, res) => {
+  // Fetch exercises and files for the user
+  const username = req.user.username;
+  const exercises = getAllExercises.all(username);
+  const files = getAllFiles.all(username);
 
-      // Render index page with user data
-      return res.render('index', {
-        username,
-        exercises,
-        files,
-      });
-    }
-  }
-  
-  // If not authenticated, redirect to login
-  res.redirect('/login');
-});
+  // Render index page with user data
+  return res.render('index', {
+    username,
+    exercises,
+    files,
+  });
+}));
 
 
 app.get('/login', (req, res) => {
@@ -101,24 +90,8 @@ app.get('/register', (req, res) => {
     title: 'Register'});
 });
 
-// Authentication routes
-app.use(authRouter);
-
 // Rest of your existing routes remain the same
 const upload = multer({ dest: "uploads/" });
-
-// Rotas de autenticação (login, register, logout)
-app.get("/login", (req, res) => {
-  res.render("login");
-});
-
-app.get("/register", (req, res) => {
-  res.render("register");
-});
-
-// POST /login, /register, /logout já são tratados no router autenticacao.ts
-app.use(authRouter);
-
 
 app.get(
   "/arquivos",
@@ -337,6 +310,18 @@ app.get(
 // Static files
 app.use(express.static(path.join(cwd(), "dist")));
 app.use("/icons", express.static(path.join(process.cwd(), "icons")));
+
+// Rotas de autenticação (login, register, logout)
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+// POST /login, /register, /logout já são tratados no router autenticacao.ts
+app.use(authRouter);
 
 // 404 Handler
 app.use(
