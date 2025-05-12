@@ -20,10 +20,10 @@ A aplicação que será desenvolvida tem como objetivo fornecer uma plataforma d
 
 ## Backlog do Produto
 
-- [ ] Como usuário, eu gostaria de gerenciar arquivos
-- [ ] Como usuário, eu gostaria de criar anotações e artigos
-- [ ] Como usuário, eu gostaria de criar exercícios e revisões
-- [ ] Como usuário, eu gostaria de ter uma conta pessoal
+- [x] Como usuário, eu gostaria de gerenciar arquivos
+- [x] Como usuário, eu gostaria de criar anotações e artigos
+- [x] Como usuário, eu gostaria de criar exercícios e revisões
+- [x] Como usuário, eu gostaria de ter uma conta pessoal
 - [ ] Como usuário, eu gostaria de categorizar os documentos e buscar por categoria
 - [ ] Como usuário, eu gostaria de ver arquivos em diferentes formatos
 - [ ] Como usuário, eu gostaria de adicionar bookmarks e destacar trechos
