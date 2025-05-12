@@ -82,6 +82,7 @@ app.get('/login', (req, res) => {
   // Render login page with main layout
   res.render('login', {
     layout: 'layouts/main', 
+    hideNav: true,
     title: 'Login'
   });
 });
@@ -96,6 +97,7 @@ app.get('/register', (req, res) => {
   // Render register page
   res.render('register', {
     layout: 'layouts/main',
+    hideNav: true,
     title: 'Register'});
 });
 
@@ -218,6 +220,7 @@ app.get(
     res.render("exercise-new", { username: req.user?.username });
   })
 );
+
 app.post(
   "/exercise",
   withUser((req, res) => {

@@ -17,34 +17,35 @@
     <title>{{title}}</title>
   </head>
   <body>
-     <nav class="container-fluid">
+    <nav class="container-fluid">
       <div class="navbar-left">
         <ul>
           <li><strong>📚 Colinha do Estudante</strong></li>
         </ul>
       </div>
-      
+      {{#unless hideNav}}
       <div class="navbar-center">
         <ul>
-          <li><a href="arquivos" 
-                 hx-get="/arquivos" 
-                 hx-target="#content-area" 
-                 hx-swap="innerHTML"
-                 hx-trigger="click"
-                 aria-current="page">Arquivos</a></li>
-          <li><a href="exercicios" 
-                 hx-get="/exercicios" 
-                 hx-target="#content-area" 
-                 hx-swap="innerHTML"
-                 hx-trigger="click">Exercícios</a></li>
-          <li><a href="anotacoes" 
-                 hx-get="/anotacoes" 
-                 hx-target="#content-area" 
-                 hx-swap="innerHTML"
-                 hx-trigger="click">Anotações</a></li>
+          <li><a href="arquivos"
+                hx-get="/arquivos"
+                hx-target="#content-area"
+                hx-swap="innerHTML"
+                hx-trigger="click"
+                aria-current="page">Arquivos</a></li>
+          <li><a href="exercicios"
+                hx-get="/exercicios"
+                hx-target="#content-area"
+                hx-swap="innerHTML"
+                hx-trigger="click">Exercícios</a></li>
+          <li><a href="anotacoes"
+                hx-get="/anotacoes"
+                hx-target="#content-area"
+                hx-swap="innerHTML"
+                hx-trigger="click">Anotações</a></li>
         </ul>
       </div>
-      
+      {{/unless}}
+
       <div class="navbar-right">
         <ul>
           {{#if username}}
@@ -61,6 +62,7 @@
         </ul>
       </div>
     </nav>
+
     <main class="container">
       <div id="content-area">
         {{{body}}}

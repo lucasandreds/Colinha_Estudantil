@@ -112,7 +112,8 @@ router.post('/register', async (req, res) => {
     req.session.userId = user.id;
 
     // Redirect to index page after successful registration
-    res.redirect('/');
+    res.setHeader('HX-Redirect', '/');
+    res.status(200).send();
   } catch (e) {
     console.error('Registration error:', e);
     res.status(500).render('register', { 
