@@ -52,12 +52,12 @@ O usuário deve poder gerenciar arquivos, fazer upload, vê-los, baixar e remov�
 
 ### [#2 Como usuário, eu gostaria de criar anotações e artigos](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/4)
 O usuário deve poder criar anotações, editá-las e removê-las.
-- [ ] Exibir anotações do usuário na página principal (Rainer)
-- [ ] Criar uma página para criação de anotação (Rainer)
-- [ ] Criar um endpoint para criação de anotação (Rainer)
-- [ ] Criar uma página para edição de anotação (Rainer)
-- [ ] Criar um endpoint para edição de anotação (Rainer)
-- [ ] Criar um endpoint para remoção de anotação (Rainer)
+- [x] Exibir anotações do usuário na página principal (Rainer)
+- [x] Criar uma página para criação de anotação (Rainer)
+- [x] Criar um endpoint para criação de anotação (Rainer)
+- [x] Criar uma página para edição de anotação (Rainer)
+- [x] Criar um endpoint para edição de anotação (Rainer)
+- [x] Criar um endpoint para remoção de anotação (Rainer)
 
 ### [#3 Como usuário, eu gostaria de criar exercícios e revisões](https://github.com/lucasandreds/Trabalho_Engenharia_Software/issues/3)
 O usuário deve poder criar e fazer exercícios, editá-los e removê-los.
