@@ -25,6 +25,7 @@ async function migrate() {
             db.pragma('user_version = 61077540');
             return migrate();
         case 61077540:
+            db.exec(await fs.readFile(path.join(cwd(), 'queries', 'create_notes_table.sql'), 'utf-8'));
             return;
         default:
             console.error('A versão do banco de dados não é conhecida:', version);
@@ -47,3 +48,9 @@ export const insertFile = db.prepare('INSERT INTO files (original_name, stored_n
 export const deleteFile = db.prepare('DELETE FROM files WHERE id = ?')
 export const getSingleFile = db.prepare('SELECT * FROM files WHERE id = ?')
 export const getAllFiles = db.prepare('SELECT * FROM files WHERE username = ? ORDER BY uploaded_at DESC');
+
+export const getSingleNote = db.prepare('SELECT * FROM notes WHERE id = ?');
+export const getAllNotes = db.prepare('SELECT * FROM notes WHERE username = ? ORDER BY created_at DESC');
+export const insertNote = db.prepare('INSERT INTO notes (title, content, username) VALUES (:title, :content, :username)');
+export const updateNote = db.prepare('UPDATE notes SET title = :title, content = :content, updated_at = :updated_at WHERE id = :id');
+export const deleteNote = db.prepare('DELETE FROM notes WHERE id = ?');
