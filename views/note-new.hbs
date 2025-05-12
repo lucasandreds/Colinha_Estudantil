@@ -1,0 +1,13 @@
+{{#> main title="Nova Anotação - Colinha"}}
+<h2>Nova Anotação</h2>
+<form id="noteForm" hx-post="/notes" hx-target="body" hx-swap="beforeend">
+  <label>
+    Título: <input type="text" id="noteTitle" name="title" required>
+  </label><br>
+  <label>
+    Conteúdo:
+    <textarea id="noteContent" name="content" rows="10" required></textarea>
+  </label><br>
+  <button type="submit">Criar Anotação</button>
+</form>
+{{/main}}

@@ -1,1 +1,35 @@
-<a class="floating-button" href="#">+</a>
+<a class="floating-button" href="/notes/new">+</a>
+
+<ul id="notes-list" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+  {{#each notes}}
+  <li 
+    class="note-preview" 
+    style="display: inline-block; vertical-align: top; margin: 0.5rem;" 
+    data-id="{{id}}"
+  >
+    <article class="card" style="width: 200px; padding: 1rem;">
+      <header>
+        <h3 style="margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{title}}</h3>
+      </header>
+      <p style="margin: 0.5rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{content}}</p>
+      <footer style="display: flex; justify-content: space-between;">
+        <a 
+          href="/notes/{{id}}/edit" 
+          class="secondary outline" 
+          style="padding: 0.3rem;"
+          title="Edit"
+        >✏️</a>
+        <button 
+          hx-delete="/notes/{{id}}" 
+          hx-target="closest li" 
+          hx-swap="outerHTML"
+          class="secondary outline" 
+          style="padding: 0.3rem;"
+          aria-label="Delete"
+          title="Delete"
+        >🗑️</button>
+      </footer>
+    </article>
+  </li>
+  {{/each}}
+</ul>
