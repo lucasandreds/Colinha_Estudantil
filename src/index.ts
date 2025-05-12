@@ -240,6 +240,13 @@ app.get(
   })
 );
 
+app.put('/exercise/:id', withUser((req, res) => {
+  const exercise = Exercise.get(req.params.id);
+  if(!exercise) return res.status(404).send('Exercise not found');
+  exercise.update(parseExerciseFromRequest(req));
+  res.header('HX-Redirect', '/exercise/' + exercise.rowid).send();
+}));
+
 app.put(
   "/notes/:id",
   withUser((req, res) => {
