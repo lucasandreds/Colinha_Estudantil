@@ -80,3 +80,13 @@ O usuário deve poder se identificar para ver seus documentos.
 - [x] Criar uma página de registro (Pedro)
 - [x] Criar um endpoint de registro (Pedro)
 - [x] Criar um endpoint de logout (Pedro)
+
+## Diagramas UML:
+
+### Diagrama de sequência de adicionar arquivos:
+
+https://www.mermaidchart.com/raw/c3b24378-2f10-419d-86dd-a82eab565f3a?theme=dark&version=v0.1&format=svg
+
+### Diagrama de classes:
+
+https://www.mermaidchart.com/raw/0de12a4d-b78a-4e1c-9698-3cb850badca2?theme=dark&version=v0.1&format=svg
