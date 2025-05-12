@@ -1,5 +1,5 @@
 {{#> main title="Login - Colinha"}}
-<form action="/login" method="post">
+<form hx-post="/login" hx-target="#flash" hx-swap="innerHTML">
   <div class="login-container">
     <h2>Login</h2>
     <div class="form-group">
@@ -13,9 +13,5 @@
     <button type="submit" class="btn-login">Entrar</button>
   </div>
 </form>
-<div id="flash">
-  {{#if error}}
-    <div class="flash-error">{{error}}</div>
-  {{/if}}
-</div>
+<div id="flash" style="color: red"></div>
 {{/main}}

@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
 
   // Validate input
   if (!username || !password) {
-    return res.status(400).render('register', { 
+    return res.status(200).render('partials/login-error', { 
       error: 'Usuário e senha são obrigatórios' 
     });
   }
@@ -80,7 +80,7 @@ router.post('/register', async (req, res) => {
     const existingUser = db.prepare('SELECT id FROM users WHERE username = ?').get(username) as { id: number } | undefined;
     
     if (existingUser) {
-      return res.status(400).render('register', { 
+      return res.status(200).render('partials/login-error', { 
         error: 'Usuário já existe' 
       });
     }
@@ -106,7 +106,7 @@ router.post('/register', async (req, res) => {
     res.status(200).send();
   } catch (e) {
     console.error('Registration error:', e);
-    res.status(500).render('register', { 
+    res.status(200).render('partials/login-error', { 
       error: 'Erro no registro. Por favor, tente novamente.' 
     });
   }
@@ -118,7 +118,7 @@ router.post('/login', async (req, res) => {
 
   // Validate input
   if (!username || !password) {
-    return res.status(400).render('login', {
+    return res.status(200).render('partials/login-error', {
       error: 'Usuário e senha são obrigatórios'
     });
   }
@@ -133,14 +133,15 @@ router.post('/login', async (req, res) => {
       req.session.userId = user.id;
       
       // Successful login redirect
-      return res.redirect('/');
+      res.header('HX-Redirect', '/').send();
+      return;
     }
-    res.status(401).render('login', {
+    res.status(200).render('partials/login-error', {
       error: 'Usuário ou senha inválidos'
     });
   } catch (e) {
     console.error('Login error:', e);
-    res.status(500).render('login', {
+    res.status(200).render('partials/login-error', {
       error: 'Erro interno do servidor. Tente novamente mais tarde.'
     });
   }

@@ -18,54 +18,44 @@
   </head>
   <body>
     <nav class="container-fluid">
-      <div class="navbar-left">
-        <ul>
-          <li><strong>📚 Colinha do Estudante</strong></li>
-        </ul>
-      </div>
+      <ul>
+        <li><strong>📚 Colinha do Estudante</strong></li>
+      </ul>
       {{#unless hideNav}}
-      <div class="navbar-center">
-        <ul>
-          <li><a href="arquivos"
-                hx-get="/arquivos"
-                hx-target="#content-area"
-                hx-swap="innerHTML"
-                hx-trigger="click"
-                aria-current="page">Arquivos</a></li>
-          <li><a href="exercicios"
-                hx-get="/exercicios"
-                hx-target="#content-area"
-                hx-swap="innerHTML"
-                hx-trigger="click">Exercícios</a></li>
-          <li><a href="anotacoes"
-                hx-get="/anotacoes"
-                hx-target="#content-area"
-                hx-swap="innerHTML"
-                hx-trigger="click">Anotações</a></li>
-        </ul>
-      </div>
+      <ul>
+        <li><a href="arquivos"
+              hx-get="/arquivos"
+              hx-target="#content-area"
+              hx-swap="innerHTML"
+              hx-trigger="click"
+              aria-current="page">Arquivos</a></li>
+        <li><a href="exercicios"
+              hx-get="/exercicios"
+              hx-target="#content-area"
+              hx-swap="innerHTML"
+              hx-trigger="click">Exercícios</a></li>
+        <li><a href="anotacoes"
+              hx-get="/anotacoes"
+              hx-target="#content-area"
+              hx-swap="innerHTML"
+              hx-trigger="click">Anotações</a></li>
+      </ul>
       {{/unless}}
 
-      <div class="navbar-right">
-        <ul>
-          {{#if username}}
-            <li><span>Olá, {{username}}!</span></li>
-            <li>
-              <form action="/logout" method="post" style="display:inline;">
-                <button type="submit">Sair</button>
-              </form>
-            </li>
-          {{else}}
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Registrar</a></li>
-          {{/if}}
-        </ul>
-      </div>
+      <ul>
+        {{#if username}}
+          <li><span>Olá, {{username}}!</span></li>
+          <li><a hx-post="/logout" hx-target="body">Sair</a></li>
+        {{else}}
+          <li><a href="/login">Login</a></li>
+          <li><a href="/register">Registrar</a></li>
+        {{/if}}
+      </ul>
     </nav>
 
     <main class="container">
       <div id="content-area">
-        {{> @partial-block}}
+        {{> @partial-block }}
       </div>
     </main>
   </body>
